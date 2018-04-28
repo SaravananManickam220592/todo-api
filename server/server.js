@@ -21,6 +21,7 @@ app.post('/todos', (req, res) => {
     });
 });
 
+//Configuring Express JS to listen to 3000 port
 app.listen(3000, () => {
     console.log('Started on Port 3000');
 });
