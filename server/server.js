@@ -109,6 +109,16 @@ app.get('/users/me',authenticate, (req,res) =>{
     res.send(req.user);
 });
 
+
+app.post('/users/login', (req,res)=>{
+    var body = _.pick(req.body, ['email', 'password']);
+    User.findByCredentials(body.email,body.password).then((user)=>{
+        res.send(user);
+    }).catch((err)=>{
+        res.status(400).send();
+    });
+});
+
 //Configuring Express JS to listen to 3000 port or the Heroku Port
 app.listen(port, () => {
     console.log(`Started on Port ${port}`);
