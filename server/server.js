@@ -119,6 +119,14 @@ app.post('/users/login', (req,res)=>{
     });
 });
 
+app.delete('/users/me/token',authenticate,(req,res)=>{
+    req.user.removeToken(req.token).then(()=>{
+        res.status(200).send();
+    },()=>{
+        res.status(400).send();
+    })
+});
+
 //Configuring Express JS to listen to 3000 port or the Heroku Port
 app.listen(port, () => {
     console.log(`Started on Port ${port}`);
