@@ -2,10 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { ObjectID } = require('mongodb');
 const _ = require('lodash');
-var cors = require('cors')
 
 var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
+var { Student } = require('./models/student');
 var { User } = require('./models/user');
 var { Trainee } = require('./models/trainee');
 var { Feedback } = require('./models/feedback');
@@ -21,7 +21,7 @@ app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
-  });
+});
   
 
 //Route to add a new Todo
@@ -37,6 +37,64 @@ app.post('/todos', authenticate, (req, res) => {
         res.status(400).send(err);
     });
 });
+
+app.post('/student', (req, res) => {
+    var student = new Student({
+        name: req.body.name,
+        email: req.body.email,
+        mobile: req.body.mobile,
+    });
+    student.save().then((doc) => {
+        res.send(doc);
+    }, (err) => {
+        console.log('Error in Saving the Data');
+        res.status(400).send(err);
+    });
+});
+
+app.get('/student', (req, res) => {
+    Student.find({
+    }).then((students) => {
+        res.send({ students });
+    }, (e) => {
+        res.status(400).send(e);
+    });
+});
+
+app.delete('/student/:id', (req, res) => {
+    var id = req.params.id;
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    Student.findOneAndRemove({
+        _id: id,
+    }).then((student) => {
+        if (!student) {
+            return res.status(404).send();
+        }
+        res.send({ student });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
+app.patch('/student/:id', (req, res) => {
+    var id = req.params.id;
+    var body = _.pick(req.body, ['name', 'email','mobile']);
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+    Student.findOneAndUpdate({ _id: id }, { $set: body }, { new: true }).then((student) => {
+        if (!student) {
+            return res.status(404).send();
+        }
+        res.send({ student });
+    }).catch((err) => {
+        res.status(400).send();
+    });
+
+});
+
 
 //Route to get all the Todos
 app.get('/todos', authenticate, (req, res) => {
