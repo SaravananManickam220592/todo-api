@@ -39,6 +39,29 @@ app.post('/todos', authenticate, (req, res) => {
     });
 });
 
+app.post('/authenticate' , (req,res)=>{
+
+    let admintoken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNhcmF2YW5hbiBNYW5pY2thbSIsImFkbWluIjp0cnVlfQ.eA-r0OKDggQyHOlsKGDxkhXiMtq0o9X9ZF3RYkQ8Rz8';
+
+    let nonadmintoken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IlNhcmF2YW5hbiBNYW5pY2thbSIsImFkbWluIjpmYWxzZX0.7eBik-Crm3uqfesr_3sefvMOZiAN5LxdiAQv3MCKHUs';
+
+    var password   =  req.body.password;
+    var email   =  req.body.email;
+
+    if(email == 'sarava@gmail.com' && password == '1234'){
+
+        res.send({ token : nonadmintoken});
+
+    }else if(email == 'sarava@gmail.com' && password == 'admin'){
+
+        res.send({ token : admintoken});
+
+    }else{
+        res.send({})
+    }
+
+});
+
 app.post('/student', (req, res) => {
     var student = new Student({
         name: req.body.name,
